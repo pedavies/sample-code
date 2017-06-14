@@ -11,16 +11,13 @@ class SimpleIOSTests(unittest.TestCase):
 
     def setUp(self):
         # set up appium
-        app = os.path.join(os.path.dirname(__file__),
-                           '../../apps/TestApp/build/release-iphonesimulator',
-                           'TestApp.app')
-        app = os.path.abspath(app)
+        app = os.path.abspath('../../apps/TestApp/build/release-iphonesimulator/TestApp.app')
         self.driver = webdriver.Remote(
             command_executor='http://127.0.0.1:4723/wd/hub',
             desired_capabilities={
                 'app': app,
                 'platformName': 'iOS',
-                'platformVersion': '8.3',
+                'platformVersion': '10.1',
                 'deviceName': 'iPhone 6'
             })
 
@@ -29,8 +26,8 @@ class SimpleIOSTests(unittest.TestCase):
 
     def _populate(self):
         # populate text fields with two random numbers
-        els = [self.driver.find_element_by_name('TextField1'),
-               self.driver.find_element_by_name('TextField2')]
+        els = [self.driver.find_element_by_accessibility_id('TextField1'),
+               self.driver.find_element_by_accessibility_id('TextField2')]
 
         self._sum = 0
         for i in range(2):
@@ -47,22 +44,22 @@ class SimpleIOSTests(unittest.TestCase):
 
         # is sum equal ?
         # sauce does not handle class name, so get fourth element
-        sum = self.driver.find_element_by_name('Answer').text
+        sum = self.driver.find_element_by_accessibility_id('Answer').text
         self.assertEqual(int(sum), self._sum)
 
     def test_scroll(self):
-        els = self.driver.find_elements_by_class_name('UIAButton')
+        els = self.driver.find_elements_by_class_name('XCUIElementTypeButton')
         els[5].click()
 
         sleep(1)
         try:
-            el = self.driver.find_element_by_accessibility_id('OK')
+            el = self.driver.find_element_by_accessibility_id('Allow')
             el.click()
             sleep(1)
         except:
             pass
 
-        el = self.driver.find_element_by_xpath('//UIAMapView[1]')
+        el = self.driver.find_element_by_xpath('//XCUIElementTypeMap[1]')
 
         location = el.location
         self.driver.swipe(start_x=location['x'], start_y=location['y'], end_x=0.5, end_y=location['y'], duration=800)
